@@ -4,6 +4,8 @@ import com.example.UniversityInformationSystem.dto.AcademicianDto;
 import com.example.UniversityInformationSystem.dto.FacultyDto;
 import com.example.UniversityInformationSystem.dto.MajorDto;
 import com.example.UniversityInformationSystem.dto.StudentDto;
+import com.example.UniversityInformationSystem.exception.AlreadyAddedException;
+import com.example.UniversityInformationSystem.exception.ModelNotFoundException;
 import com.example.UniversityInformationSystem.model.FacultyModel;
 import com.example.UniversityInformationSystem.model.MajorModel;
 import com.example.UniversityInformationSystem.repository.IFacultyRepository;
@@ -66,7 +68,7 @@ public class FacultyService {
     public FacultyModel getFacultyById(Long id) {
 
         return facultyRepository.findById(id).orElseThrow(
-                ()-> new RuntimeException("faculty can not found!"));
+                ()-> new ModelNotFoundException("Faculty can not found!"));
 
 
     }
@@ -85,20 +87,15 @@ public class FacultyService {
 
     @Transactional
     public FacultyDto addMajorToFaculty(Long facultyId, Long majorId) {
-        AtomicBoolean isAlreadyAdded= new AtomicBoolean(false);
         MajorModel majorModel = majorService.getMajorById(majorId);
         FacultyModel facultyModel=getFacultyById(facultyId);
 
         facultyModel.getMajorModelList().forEach(item -> {
 
             if(item.getMajorId()==majorId){
-                isAlreadyAdded.set(true);
-            }
+                throw new AlreadyAddedException("Major is already added to Faculty!");            }
 
         });
-        if(isAlreadyAdded.get()){
-            return convertToFacultyDto(facultyModel);
-        }
 
         facultyModel.getMajorModelList().add(majorModel);
         majorModel.setFacultyModel(facultyModel);

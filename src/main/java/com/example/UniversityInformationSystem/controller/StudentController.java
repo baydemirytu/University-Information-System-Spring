@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.example.UniversityInformationSystem.service.StudentService;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -58,7 +59,7 @@ public class StudentController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<String> addStudent(@RequestBody StudentDto studentDto){
+    public ResponseEntity<String> addStudent(@Valid @RequestBody StudentDto studentDto){
         studentService.addStudent(studentDto);
         return new ResponseEntity<>(studentDto.toString(), HttpStatus.OK);
     }

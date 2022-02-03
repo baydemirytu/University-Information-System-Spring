@@ -4,6 +4,8 @@ import com.example.UniversityInformationSystem.dto.FacultyDto;
 import com.example.UniversityInformationSystem.dto.MajorDto;
 import com.example.UniversityInformationSystem.dto.StudentDto;
 import com.example.UniversityInformationSystem.dto.UniversityDto;
+import com.example.UniversityInformationSystem.exception.AlreadyAddedException;
+import com.example.UniversityInformationSystem.exception.ModelNotFoundException;
 import com.example.UniversityInformationSystem.model.FacultyModel;
 import com.example.UniversityInformationSystem.model.UniversityModel;
 import com.example.UniversityInformationSystem.repository.IUniversityRepository;
@@ -70,12 +72,12 @@ public class UniversityService {
     public UniversityModel getUniversityById(Long id) {
 
          return universityRepository.findById(id).orElseThrow(
-                 ()-> new RuntimeException("University can not found!"));
+                 ()-> new ModelNotFoundException("University can not found!"));
     }
 
-    public List<FacultyDto> getAllFaculties(Long uniId) {
+    public List<FacultyDto> getAllFaculties(Long universityId) {
         facultyDtoList.clear();
-        UniversityModel universityModel = universityRepository.findById(uniId).orElseThrow(() -> new RuntimeException("Uni can not found!"));
+        UniversityModel universityModel = getUniversityById(universityId);
         universityModel.getFacultyModelList().forEach(item->{
 
             facultyDtoList.add(facultyService.convertToFacultyDto(item));
@@ -86,7 +88,6 @@ public class UniversityService {
 
     @Transactional
     public UniversityDto addFacultyToUniversity(Long uniId, Long facultyId) {
-        AtomicBoolean isAlreadyAdded = new AtomicBoolean(false);
         FacultyModel facultyModel = facultyService.getFacultyById(facultyId);
 
         UniversityModel universityModel =  getUniversityById(uniId);
@@ -94,13 +95,9 @@ public class UniversityService {
         universityModel.getFacultyModelList().forEach(item -> {
 
             if(item.getFacultyId()==facultyId){
-                isAlreadyAdded.set(true);
-                //Exception classını oluştur
+                throw new AlreadyAddedException("Faculty is already added to University!");
             }
         });
-        if(isAlreadyAdded.get() == true){
-            return convertToUniversityDto(universityModel);
-        }
 
         universityModel.getFacultyModelList().add(facultyModel);
         facultyModel.setUniversityModel(universityModel);

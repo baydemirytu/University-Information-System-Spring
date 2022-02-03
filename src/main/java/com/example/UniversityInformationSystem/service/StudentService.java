@@ -1,6 +1,7 @@
 package com.example.UniversityInformationSystem.service;
 
 import com.example.UniversityInformationSystem.dto.StudentDto;
+import com.example.UniversityInformationSystem.exception.ModelNotFoundException;
 import com.example.UniversityInformationSystem.model.CourseModel;
 import com.example.UniversityInformationSystem.repository.ICourseRepository;
 import lombok.AllArgsConstructor;
@@ -57,7 +58,7 @@ public class StudentService {
     public StudentModel getStudentById(Long id) {
 
         return studentRepository.findById(id).orElseThrow(
-                ()-> new RuntimeException("Student can not found!"));
+                ()-> new ModelNotFoundException("Student can not found!"));
 
 
     }
@@ -114,7 +115,7 @@ public class StudentService {
     public List<CourseModel> deleteCourseFromTakens(Long studentId, Long courseId){
         StudentModel studentModel = getStudentById(studentId);
         CourseModel courseModel = courseRepository.findById(courseId).orElseThrow(
-                () -> new RuntimeException("Course can not found!")
+                () -> new ModelNotFoundException("Course can not found!")
         );
 
         studentModel.getCourseModelList().remove(courseModel);

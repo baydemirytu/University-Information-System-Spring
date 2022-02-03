@@ -2,6 +2,7 @@ package com.example.UniversityInformationSystem.service;
 
 import com.example.UniversityInformationSystem.dto.AcademicianDto;
 import com.example.UniversityInformationSystem.dto.CourseDto;
+import com.example.UniversityInformationSystem.exception.ModelNotFoundException;
 import com.example.UniversityInformationSystem.model.AcademicianModel;
 import com.example.UniversityInformationSystem.model.CourseModel;
 import com.example.UniversityInformationSystem.repository.IAcademicianRepository;
@@ -60,7 +61,7 @@ public class AcademicianService {
     public AcademicianModel getAcademicianById(Long academicianId) {
 
         return academicianRepository.findById(academicianId).orElseThrow(
-                () -> new RuntimeException("Academician can not found"));
+                () -> new ModelNotFoundException("Academician can not found"));
 
     }
 

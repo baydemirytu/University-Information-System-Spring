@@ -3,18 +3,19 @@ package com.example.UniversityInformationSystem.service;
 import com.example.UniversityInformationSystem.dto.AcademicianDto;
 import com.example.UniversityInformationSystem.dto.CourseDto;
 import com.example.UniversityInformationSystem.dto.StudentDto;
+import com.example.UniversityInformationSystem.exception.AlreadyAddedException;
+import com.example.UniversityInformationSystem.exception.LogicalMistakeException;
+import com.example.UniversityInformationSystem.exception.ModelNotFoundException;
 import com.example.UniversityInformationSystem.model.AcademicianModel;
 import com.example.UniversityInformationSystem.model.CourseModel;
 import com.example.UniversityInformationSystem.model.StudentModel;
 import com.example.UniversityInformationSystem.repository.ICourseRepository;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
+
 
 @Service
 @AllArgsConstructor
@@ -73,7 +74,7 @@ public class CourseService {
     public CourseModel getCourseById(Long courseId) {
 
         return courseRepository.findById(courseId).orElseThrow(
-                () -> new RuntimeException("Course can not found!"));
+                () -> new ModelNotFoundException("Course can not found!"));
 
     }
 
@@ -92,30 +93,28 @@ public class CourseService {
 
     @Transactional
     public CourseDto addStudentToCourse(Long courseId, Long studentId) {
-        AtomicBoolean isAlreadyAdded = new AtomicBoolean(false);
+
         StudentModel studentModel = studentService.getStudentById(studentId);
         CourseModel courseModel = getCourseById(courseId);
 
         if(studentModel.getMajorModel().getMajorId()!=courseModel.getMajorModel().getMajorId()){
 
-            throw new RuntimeException("Student must take courses that opened in their majors!");
+            throw new LogicalMistakeException("Student must take courses that opened in their majors!");
 
         }
 
         courseModel.getStudentModelList().forEach(item -> {
 
             if(item.getStudentId()==studentId){
-                isAlreadyAdded.set(true);
+
+                throw new AlreadyAddedException("Student is alredy added to course!");
             }
 
         });
 
-        if (isAlreadyAdded.get()){
-            return convertToCourseDto(courseModel);
-        }
 
         if(courseModel.getQuota()<=courseModel.getStudentModelList().size()){
-            throw new RuntimeException("Quota is full! Increase the course quota!");
+            throw new LogicalMistakeException("Quota is full! Increase the course quota!");
 
         }
 
@@ -181,8 +180,11 @@ public class CourseService {
         CourseModel courseModel = getCourseById(courseId);
 
         courseModel.setName(courseDto.getName());
-        if(courseDto.getQuota()>courseModel.getQuota()){
+        if(courseDto.getQuota()>=courseModel.getQuota()){
             courseModel.setQuota(courseDto.getQuota());
+        }
+        else{
+            throw new LogicalMistakeException("Course qouta can only be increased!");
         }
 
         courseRepository.save(courseModel);

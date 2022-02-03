@@ -4,6 +4,9 @@ import com.example.UniversityInformationSystem.dto.AcademicianDto;
 import com.example.UniversityInformationSystem.dto.CourseDto;
 import com.example.UniversityInformationSystem.dto.MajorDto;
 import com.example.UniversityInformationSystem.dto.StudentDto;
+import com.example.UniversityInformationSystem.exception.AlreadyAddedException;
+import com.example.UniversityInformationSystem.exception.LogicalMistakeException;
+import com.example.UniversityInformationSystem.exception.ModelNotFoundException;
 import com.example.UniversityInformationSystem.model.AcademicianModel;
 import com.example.UniversityInformationSystem.model.CourseModel;
 import com.example.UniversityInformationSystem.model.MajorModel;
@@ -79,36 +82,32 @@ public class MajorService {
     public MajorModel getMajorById(Long majorId) {
 
         return majorRepository.findById(majorId).orElseThrow(
-                () -> new RuntimeException("Major can not found!"));
+                () -> new ModelNotFoundException("Major can not found!"));
 
     }
 
     @Transactional
     public MajorDto addStudentToMajor(Long majorId, Long studentId) {
-        AtomicBoolean isAlreadyAdded= new AtomicBoolean(false);
+
         StudentModel studentModel = studentService.getStudentById(studentId);
         MajorModel majorModel = getMajorById(majorId);
 
         if(studentModel.getMajorModel()!=null){
-            throw new RuntimeException("Student is already added to a major!");
+            throw new AlreadyAddedException("Student is already added to a major!");
         }
 
         if(majorModel.getStudentModelList().size()>=majorModel.getQuota()){
-            throw new RuntimeException("Quota of major is full!");
+            throw new LogicalMistakeException("Quota of major is full!");
         }
 
         majorModel.getStudentModelList().forEach(item -> {
 
             if(item.getStudentId()== studentId){
-                isAlreadyAdded.set(true);
+                throw new AlreadyAddedException("Student is already added to Major!");
 
             }
 
         });
-
-        if(isAlreadyAdded.get()){
-            return convertToMajorDto(majorModel);
-        }
 
         majorModel.getStudentModelList().add(studentModel);
         studentModel.setMajorModel(majorModel);
@@ -119,22 +118,19 @@ public class MajorService {
 
     @Transactional
     public MajorDto addAcademicianToMajor(Long majorId, Long academicianId) {
-        AtomicBoolean isAlreadyAdded= new AtomicBoolean(false);
+
         AcademicianModel academicianModel = academicianService.getAcademicianById(academicianId);
         MajorModel majorModel = getMajorById(majorId);
 
         majorModel.getAcademicianModelList().forEach(item -> {
 
             if(item.getAcademicianId()== academicianId){
-                isAlreadyAdded.set(true);
+                throw new AlreadyAddedException("Academician is already added to Major!");
 
             }
 
         });
 
-        if(isAlreadyAdded.get()){
-            return convertToMajorDto(majorModel);
-        }
 
         majorModel.getAcademicianModelList().add(academicianModel);
         academicianModel.setMajorModel(majorModel);
@@ -174,22 +170,18 @@ public class MajorService {
 
     @Transactional
     public MajorDto addCourseToMajor(Long majorId, Long courseId) {
-        AtomicBoolean isAlreadyAdded= new AtomicBoolean(false);
         CourseModel courseModel = courseService.getCourseById(courseId);
         MajorModel majorModel = getMajorById(majorId);
 
         majorModel.getCourseModelList().forEach(item -> {
 
             if(item.getCourseId()== courseId){
-                isAlreadyAdded.set(true);
+                throw new AlreadyAddedException("Course is already added to Major!");
 
             }
 
         });
 
-        if(isAlreadyAdded.get()){
-            return convertToMajorDto(majorModel);
-        }
 
         majorModel.getCourseModelList().add(courseModel);
         courseModel.setMajorModel(majorModel);
