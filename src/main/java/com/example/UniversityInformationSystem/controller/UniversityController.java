@@ -25,9 +25,9 @@ public class UniversityController {
     }
 
     @GetMapping("/{universityId}")
-    public ResponseEntity<UniversityDto> getUniversityById(@PathVariable Long id){
+    public ResponseEntity<UniversityDto> getUniversityById(@PathVariable Long universityId){
 
-        return new ResponseEntity<UniversityDto>(universityService.convertToUniversityDto(universityService.getUniversityById(id)), HttpStatus.OK);
+        return new ResponseEntity<UniversityDto>(universityService.convertToUniversityDto(universityService.getUniversityById(universityId)), HttpStatus.OK);
 
     }
 
@@ -41,9 +41,9 @@ public class UniversityController {
 
 
     @GetMapping("/all/faculties/{universityId}")
-    public ResponseEntity<List<FacultyDto>> getFaculties(@PathVariable Long uniId){
+    public ResponseEntity<List<FacultyDto>> getFaculties(@PathVariable Long universityId){
 
-        return new ResponseEntity<List<FacultyDto>>(universityService.getAllFaculties(uniId),HttpStatus.OK);
+        return new ResponseEntity<List<FacultyDto>>(universityService.getAllFaculties(universityId),HttpStatus.OK);
 
     }
 
@@ -70,11 +70,11 @@ public class UniversityController {
     }
 
 
-    @PostMapping("/add/faculty/{uniId}-{facultyId}")
-    public ResponseEntity<String> addFacultyToUniversity(@PathVariable Long uniId, @PathVariable Long facultyId){
+    @PostMapping("/add/faculty/{universityId}-{facultyId}")
+    public ResponseEntity<String> addFacultyToUniversity(@PathVariable Long universityId, @PathVariable Long facultyId){
 
 
-        return new ResponseEntity<String>(universityService.addFacultyToUniversity(uniId,facultyId).toString(),HttpStatus.OK);
+        return new ResponseEntity<String>(universityService.addFacultyToUniversity(universityId,facultyId).toString(),HttpStatus.OK);
 
     }
 
