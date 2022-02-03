@@ -1,6 +1,8 @@
 package com.example.UniversityInformationSystem.controller;
 
 import com.example.UniversityInformationSystem.dto.FacultyDto;
+import com.example.UniversityInformationSystem.dto.MajorDto;
+import com.example.UniversityInformationSystem.dto.StudentDto;
 import com.example.UniversityInformationSystem.dto.UniversityDto;
 import com.example.UniversityInformationSystem.service.UniversityService;
 import lombok.AllArgsConstructor;
@@ -22,6 +24,12 @@ public class UniversityController {
         return new ResponseEntity<>("merhaba", HttpStatus.OK);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<UniversityDto> getUniversityById(@PathVariable Long id){
+
+        return new ResponseEntity<UniversityDto>(universityService.convertToUniversityDto(universityService.getUniversityById(id)), HttpStatus.OK);
+
+    }
 
     @GetMapping("/all")
     public ResponseEntity<List<UniversityDto>> getAllUniversities(){
@@ -30,21 +38,28 @@ public class UniversityController {
 
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<UniversityDto> getUniversityById(@PathVariable Long id){
 
-        return new ResponseEntity<UniversityDto>(universityService.convertToUniversityDto(universityService.getUniversityById(id)), HttpStatus.OK);
 
-    }
-
-    @GetMapping("/faculties/{uniId}")
+    @GetMapping("/all/faculties/{uniId}")
     public ResponseEntity<List<FacultyDto>> getFaculties(@PathVariable Long uniId){
 
-        return new ResponseEntity<List<FacultyDto>>(universityService.getFaculties(uniId),HttpStatus.OK);
+        return new ResponseEntity<List<FacultyDto>>(universityService.getAllFaculties(uniId),HttpStatus.OK);
 
     }
 
+    @GetMapping("/all/majors/{universityId}")
+    public ResponseEntity<List<MajorDto>> getAllMajors(@PathVariable Long universityId){
 
+        return new ResponseEntity<List<MajorDto>>(universityService.getAllMajors(universityId),HttpStatus.OK);
+
+    }
+
+    @GetMapping("/all/students/{universityId}")
+    public ResponseEntity<List<StudentDto>> getAllStudents(@PathVariable Long universityId){
+
+        return new ResponseEntity<List<StudentDto>>(universityService.getAllStudents(universityId),HttpStatus.OK);
+
+    }
 
     @PostMapping("/add")
     public ResponseEntity<String> addUniversity (@RequestBody UniversityDto universityDto){

@@ -8,6 +8,8 @@ import com.example.UniversityInformationSystem.model.CourseModel;
 import com.example.UniversityInformationSystem.model.StudentModel;
 import com.example.UniversityInformationSystem.repository.ICourseRepository;
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,16 +46,8 @@ public class CourseService {
         courseDtoList.clear();
         courseRepository.findAll().forEach(item -> {
 
-            CourseDto courseDto = new CourseDto();
-            courseDto.setName(item.getName());
-            courseDto.setQuota(item.getQuota());
-            if(item.getAcademicianModel() == null) {
-                courseDto.setInstructorName(null);
-            }else{
-                courseDto.setInstructorName(item.getAcademicianModel().getName());
-            }
+            courseDtoList.add(convertToCourseDto(item));
 
-            courseDtoList.add(courseDto);
         });
 
         return courseDtoList;
@@ -71,7 +65,7 @@ public class CourseService {
             courseDto.setInstructorName(courseModel.getAcademicianModel().getName());
         }
         courseDto.setQuota(courseModel.getQuota());
-
+        courseDto.setTakenBy(courseModel.getStudentModelList().size());
         return courseDto;
     }
 
@@ -102,6 +96,12 @@ public class CourseService {
         StudentModel studentModel = studentService.getStudentById(studentId);
         CourseModel courseModel = getCourseById(courseId);
 
+        if(studentModel.getMajorModel().getMajorId()!=courseModel.getMajorModel().getMajorId()){
+
+            throw new RuntimeException("Student must take courses that opened in their majors!");
+
+        }
+
         courseModel.getStudentModelList().forEach(item -> {
 
             if(item.getStudentId()==studentId){
@@ -121,6 +121,7 @@ public class CourseService {
 
         courseModel.getStudentModelList().add(studentModel);
         studentModel.getCourseModelList().add(courseModel);
+
         courseRepository.save(courseModel);
         return convertToCourseDto(courseModel);
 

@@ -2,12 +2,21 @@ package com.example.UniversityInformationSystem.service;
 
 import com.example.UniversityInformationSystem.dto.StudentDto;
 import com.example.UniversityInformationSystem.model.CourseModel;
+import com.example.UniversityInformationSystem.repository.ICourseRepository;
 import lombok.AllArgsConstructor;
 import com.example.UniversityInformationSystem.model.StudentModel;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import com.example.UniversityInformationSystem.repository.IStudentRepository;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.PostConstruct;
 import java.util.*;
 
 @Service
@@ -16,9 +25,12 @@ public class StudentService {
 
     private final IStudentRepository studentRepository;
 
+    private final ICourseRepository courseRepository;
+
     private List<StudentDto> studentDtoList;
 
     private List<CourseModel> courseModelList;
+
 
     @Transactional
     public void addStudent (StudentDto studentDto){
@@ -97,4 +109,22 @@ public class StudentService {
         return courseModelList;
 
     }
+
+    @Transactional
+    public List<CourseModel> deleteCourseFromTakens(Long studentId, Long courseId){
+        StudentModel studentModel = getStudentById(studentId);
+        CourseModel courseModel = courseRepository.findById(courseId).orElseThrow(
+                () -> new RuntimeException("Course can not found!")
+        );
+
+        studentModel.getCourseModelList().remove(courseModel);
+        courseModel.getStudentModelList().remove(studentModel);
+        studentRepository.save(studentModel);
+        courseRepository.save(courseModel);
+
+        return studentModel.getCourseModelList();
+
+    }
+
+
 }

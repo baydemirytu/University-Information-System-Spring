@@ -1,7 +1,9 @@
 package com.example.UniversityInformationSystem.service;
 
 import com.example.UniversityInformationSystem.dto.AcademicianDto;
+import com.example.UniversityInformationSystem.dto.CourseDto;
 import com.example.UniversityInformationSystem.model.AcademicianModel;
+import com.example.UniversityInformationSystem.model.CourseModel;
 import com.example.UniversityInformationSystem.repository.IAcademicianRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,8 @@ public class AcademicianService {
     private final IAcademicianRepository academicianRepository;
 
     private List<AcademicianDto> academicianDtoList;
+
+    private List<CourseModel> courseModelList;
 
     @Transactional
     public void addAcademician(AcademicianDto academicianDto) {
@@ -78,5 +82,19 @@ public class AcademicianService {
 
         academicianRepository.deleteById(academicianId);
 
+    }
+
+    public List<CourseModel> getAllCourses(Long academicianId) {
+
+
+        AcademicianModel academicianModel = getAcademicianById(academicianId);
+
+        academicianModel.getCourseModelList().forEach(courseModel -> {
+
+            courseModelList.add(courseModel);
+
+        });
+
+        return courseModelList;
     }
 }

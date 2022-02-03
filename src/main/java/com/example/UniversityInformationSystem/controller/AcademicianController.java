@@ -1,7 +1,10 @@
 package com.example.UniversityInformationSystem.controller;
 
 import com.example.UniversityInformationSystem.dto.AcademicianDto;
+import com.example.UniversityInformationSystem.dto.CourseDto;
+import com.example.UniversityInformationSystem.model.CourseModel;
 import com.example.UniversityInformationSystem.service.AcademicianService;
+import com.example.UniversityInformationSystem.service.CourseService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +19,10 @@ public class AcademicianController {
 
     private final AcademicianService academicianService;
 
+    private final CourseService courseService;
+
+    private List<CourseDto> courseDtoList;
+
     @GetMapping
     public ResponseEntity<String> merhaba(){
         return new ResponseEntity<>("merhaba", HttpStatus.OK);
@@ -29,6 +36,20 @@ public class AcademicianController {
 
     }
 
+    @GetMapping("/all/courses/{academicianId}")
+    public ResponseEntity<List<CourseDto>> getAllCourses(@PathVariable Long academicianId){
+        courseDtoList.clear();
+        List<CourseModel> courseModelList = academicianService.getAllCourses(academicianId);
+
+        courseModelList.forEach(courseModel -> {
+
+            courseDtoList.add(courseService.convertToCourseDto(courseModel));
+
+        });
+
+        return new ResponseEntity<List<CourseDto>>(courseDtoList,HttpStatus.OK);
+
+    }
 
 
     @PostMapping("/add")

@@ -11,6 +11,7 @@ public class CourseDto {
 
     private String name;
     private int quota;
+    private int takenBy;
     private String instructorName;
 
 

@@ -71,4 +71,19 @@ public class StudentController {
 
     }
 
+    @DeleteMapping("/delete/course/{studentId}-{courseId}")
+    public ResponseEntity<List<CourseDto>> deleteCourseFromTakens(@PathVariable Long studentId
+                                                                , @PathVariable Long courseId){
+        courseModelList.clear();
+        courseDtoList.clear();
+        courseModelList = studentService.deleteCourseFromTakens(studentId,courseId);
+
+        courseModelList.forEach(courseModel -> {
+            courseDtoList.add(courseService.convertToCourseDto(courseModel));
+        });
+
+        return new ResponseEntity<List<CourseDto>>(courseDtoList,HttpStatus.OK);
+    }
+
+
 }

@@ -1,6 +1,8 @@
 package com.example.UniversityInformationSystem.service;
 
 import com.example.UniversityInformationSystem.dto.FacultyDto;
+import com.example.UniversityInformationSystem.dto.MajorDto;
+import com.example.UniversityInformationSystem.dto.StudentDto;
 import com.example.UniversityInformationSystem.dto.UniversityDto;
 import com.example.UniversityInformationSystem.model.FacultyModel;
 import com.example.UniversityInformationSystem.model.UniversityModel;
@@ -22,7 +24,15 @@ public class UniversityService {
 
     private final FacultyService facultyService;
 
+    private final StudentService studentService;
+
+    private final MajorService majorService;
+
     private List<FacultyDto> facultyDtoList;
+
+    private List<MajorDto> majorDtoList;
+
+    private List<StudentDto> studentDtoList;
 
     @Transactional
     public void addUniversity(UniversityDto universityDto) {
@@ -63,7 +73,7 @@ public class UniversityService {
                  ()-> new RuntimeException("University can not found!"));
     }
 
-    public List<FacultyDto> getFaculties(Long uniId) {
+    public List<FacultyDto> getAllFaculties(Long uniId) {
         facultyDtoList.clear();
         UniversityModel universityModel = universityRepository.findById(uniId).orElseThrow(() -> new RuntimeException("Uni can not found!"));
         universityModel.getFacultyModelList().forEach(item->{
@@ -99,5 +109,40 @@ public class UniversityService {
 
     }
 
+    public List<MajorDto> getAllMajors(Long universityId){
+        majorDtoList.clear();
+        UniversityModel universityModel = getUniversityById(universityId);
 
+        universityModel.getFacultyModelList().forEach(facultyModel -> {
+
+            facultyModel.getMajorModelList().forEach(majorModel -> {
+
+                majorDtoList.add(majorService.convertToMajorDto(majorModel));
+
+            });
+
+        });
+        return majorDtoList;
+    }
+
+    public List<StudentDto> getAllStudents(Long universityId) {
+        studentDtoList.clear();
+        UniversityModel universityModel = getUniversityById(universityId);
+
+        universityModel.getFacultyModelList().forEach(facultyModel -> {
+
+            facultyModel.getMajorModelList().forEach(majorModel -> {
+
+                majorModel.getStudentModelList().forEach(studentModel -> {
+
+                    studentDtoList.add(studentService.convertToStudentDto(studentModel));
+
+                });
+
+            });
+
+        });
+
+        return studentDtoList;
+    }
 }
