@@ -1,7 +1,9 @@
 package com.example.UniversityInformationSystem.service;
 
+import com.example.UniversityInformationSystem.dto.AcademicianDto;
 import com.example.UniversityInformationSystem.dto.FacultyDto;
 import com.example.UniversityInformationSystem.dto.MajorDto;
+import com.example.UniversityInformationSystem.dto.StudentDto;
 import com.example.UniversityInformationSystem.model.FacultyModel;
 import com.example.UniversityInformationSystem.model.MajorModel;
 import com.example.UniversityInformationSystem.repository.IFacultyRepository;
@@ -23,6 +25,10 @@ public class FacultyService {
     private List<MajorDto> majorDtoList;
 
     private MajorService majorService;
+
+    private List<StudentDto> studentDtoList;
+
+    private List<AcademicianDto> academicianDtoList;
 
     @Transactional
     public void addFaculty(FacultyDto facultyDto) {
@@ -101,5 +107,36 @@ public class FacultyService {
 
     }
 
+    public List<StudentDto> getAllStudents(Long facultyId){
+        studentDtoList.clear();
+        FacultyModel facultyModel = getFacultyById(facultyId);
+
+        facultyModel.getMajorModelList().forEach(majorModel -> {
+
+            majorService.getAllStudents(majorModel.getMajorId()).forEach(studentDto -> {
+
+                studentDtoList.add(studentDto);
+
+            });
+
+        });
+        return studentDtoList;
+    }
+
+    public List<AcademicianDto> getAllAcademicians(Long facultyId){
+        academicianDtoList.clear();
+        FacultyModel facultyModel = getFacultyById(facultyId);
+
+        facultyModel.getMajorModelList().forEach(majorModel -> {
+
+            majorService.getAllAcademicians(majorModel.getMajorId()).forEach(academicianDto -> {
+
+                academicianDtoList.add(academicianDto);
+
+            });
+
+        });
+        return academicianDtoList;
+    }
 
 }

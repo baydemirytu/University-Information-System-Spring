@@ -1,7 +1,9 @@
 package com.example.UniversityInformationSystem.controller;
 
+import com.example.UniversityInformationSystem.dto.AcademicianDto;
 import com.example.UniversityInformationSystem.dto.FacultyDto;
 import com.example.UniversityInformationSystem.dto.MajorDto;
+import com.example.UniversityInformationSystem.dto.StudentDto;
 import com.example.UniversityInformationSystem.service.FacultyService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -42,6 +44,20 @@ public class FacultyController {
     public ResponseEntity<List<MajorDto>>getMajors(@PathVariable Long facultyId){
 
         return new ResponseEntity<List<MajorDto>>(facultyService.getMajors(facultyId),HttpStatus.OK);
+
+    }
+
+    @GetMapping("/all/students/{facultyId}")
+    public ResponseEntity<List<StudentDto>> getAllStudents(@PathVariable Long facultyId){
+
+        return new ResponseEntity<List<StudentDto>>(facultyService.getAllStudents(facultyId),HttpStatus.OK);
+
+    }
+
+    @GetMapping("/all/academicians/{facultyId}")
+    public ResponseEntity<List<AcademicianDto>> getAllAcademicians(@PathVariable Long facultyId){
+
+        return new ResponseEntity<List<AcademicianDto>>(facultyService.getAllAcademicians(facultyId),HttpStatus.OK);
 
     }
 
