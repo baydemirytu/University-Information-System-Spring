@@ -55,11 +55,8 @@ public class MajorService {
 
         majorRepository.findAll().forEach(item -> {
 
-            MajorDto majorDto = new MajorDto();
-            majorDto.setName(item.getName());
-            majorDto.setQuota(item.getQuota());
-            majorDto.setLocation(item.getLocation());
-            majorDtoList.add(majorDto);
+            majorDtoList.add(convertToMajorDto(item));
+
         });
 
         return majorDtoList;
@@ -71,6 +68,7 @@ public class MajorService {
         MajorDto majorDto = new MajorDto();
         majorDto.setName(majorModel.getName());
         majorDto.setQuota(majorModel.getQuota());
+        majorDto.setStudentNumber(majorModel.getStudentModelList().size());
         majorDto.setLocation(majorModel.getLocation());
         return majorDto;
 
@@ -80,14 +78,24 @@ public class MajorService {
 
     public MajorModel getMajorById(Long majorId) {
 
-        return majorRepository.findById(majorId).orElseThrow(() -> new RuntimeException("Major can not found!"));
+        return majorRepository.findById(majorId).orElseThrow(
+                () -> new RuntimeException("Major can not found!"));
 
     }
+
     @Transactional
     public MajorDto addStudentToMajor(Long majorId, Long studentId) {
         AtomicBoolean isAlreadyAdded= new AtomicBoolean(false);
         StudentModel studentModel = studentService.getStudentById(studentId);
         MajorModel majorModel = getMajorById(majorId);
+
+        if(studentModel.getMajorModel()!=null){
+            throw new RuntimeException("Student is already added to a major!");
+        }
+
+        if(majorModel.getStudentModelList().size()>=majorModel.getQuota()){
+            throw new RuntimeException("Quota of major is full!");
+        }
 
         majorModel.getStudentModelList().forEach(item -> {
 

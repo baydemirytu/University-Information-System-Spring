@@ -24,7 +24,7 @@ public class UniversityController {
         return new ResponseEntity<>("merhaba", HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{universityId}")
     public ResponseEntity<UniversityDto> getUniversityById(@PathVariable Long id){
 
         return new ResponseEntity<UniversityDto>(universityService.convertToUniversityDto(universityService.getUniversityById(id)), HttpStatus.OK);
@@ -40,7 +40,7 @@ public class UniversityController {
 
 
 
-    @GetMapping("/all/faculties/{uniId}")
+    @GetMapping("/all/faculties/{universityId}")
     public ResponseEntity<List<FacultyDto>> getFaculties(@PathVariable Long uniId){
 
         return new ResponseEntity<List<FacultyDto>>(universityService.getAllFaculties(uniId),HttpStatus.OK);

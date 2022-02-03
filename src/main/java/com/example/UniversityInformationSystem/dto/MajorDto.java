@@ -11,6 +11,7 @@ public class MajorDto {
 
     private String name;
     private int quota;
+    private int studentNumber;
     private String location;
 
 }

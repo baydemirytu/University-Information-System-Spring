@@ -33,7 +33,7 @@ public class FacultyController {
 
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{facultyId}")
     public ResponseEntity<FacultyDto> getFacultyById(@PathVariable Long id){
 
         return new ResponseEntity<FacultyDto>(facultyService.convertToFacultyDto(facultyService.getFacultyById(id)), HttpStatus.OK);

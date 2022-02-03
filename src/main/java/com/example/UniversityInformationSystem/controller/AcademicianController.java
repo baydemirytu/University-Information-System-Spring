@@ -28,6 +28,14 @@ public class AcademicianController {
         return new ResponseEntity<>("merhaba", HttpStatus.OK);
     }
 
+    @GetMapping("/{academicianId}")
+    public ResponseEntity<AcademicianDto> getAcademicianById(@PathVariable Long academicianId){
+
+        return new ResponseEntity<AcademicianDto>(academicianService.convertToAcademicianDto(
+                                                    academicianService.getAcademicianById(academicianId)),
+                                                    HttpStatus.OK);
+
+    }
 
     @GetMapping("/all")
     public ResponseEntity<List<AcademicianDto>> getAllAcademicians(){
