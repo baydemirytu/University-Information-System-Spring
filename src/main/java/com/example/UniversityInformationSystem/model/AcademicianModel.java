@@ -12,7 +12,8 @@ import java.util.List;
 public class AcademicianModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SequenceGenerator(name = "academician_id_seq", initialValue = 100000, allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "academician_id_seq")
     private Long academicianId;
 
     @NotNull
@@ -22,6 +23,8 @@ public class AcademicianModel {
     @NotNull
     @NotEmpty
     private String surname;
+
+    private String password;
 
     @NotNull
     @NotEmpty
@@ -34,9 +37,7 @@ public class AcademicianModel {
     @JoinColumn(name = "majorId")
     private MajorModel majorModel;
 
-    public enum  AcademicianType{
-        PROFFESSOR,DOCENT,INSTRUCTOR,ASSISTANT
-    }
+
 
 
 }

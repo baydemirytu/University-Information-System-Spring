@@ -1,6 +1,9 @@
 package com.example.UniversityInformationSystem.controller;
 
-import com.example.UniversityInformationSystem.dto.*;
+import com.example.UniversityInformationSystem.dto.response.AcademicianDto;
+import com.example.UniversityInformationSystem.dto.response.CourseDto;
+import com.example.UniversityInformationSystem.dto.response.MajorDto;
+import com.example.UniversityInformationSystem.dto.response.StudentDto;
 import com.example.UniversityInformationSystem.service.MajorService;
 import com.example.UniversityInformationSystem.service.StudentService;
 import lombok.AllArgsConstructor;

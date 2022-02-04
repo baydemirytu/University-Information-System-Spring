@@ -1,7 +1,7 @@
 package com.example.UniversityInformationSystem.controller;
 
-import com.example.UniversityInformationSystem.dto.AcademicianDto;
-import com.example.UniversityInformationSystem.dto.CourseDto;
+import com.example.UniversityInformationSystem.dto.response.AcademicianDto;
+import com.example.UniversityInformationSystem.dto.response.CourseDto;
 import com.example.UniversityInformationSystem.model.CourseModel;
 import com.example.UniversityInformationSystem.service.AcademicianService;
 import com.example.UniversityInformationSystem.service.CourseService;

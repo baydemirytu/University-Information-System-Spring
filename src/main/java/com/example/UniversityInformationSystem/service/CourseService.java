@@ -1,8 +1,8 @@
 package com.example.UniversityInformationSystem.service;
 
-import com.example.UniversityInformationSystem.dto.AcademicianDto;
-import com.example.UniversityInformationSystem.dto.CourseDto;
-import com.example.UniversityInformationSystem.dto.StudentDto;
+import com.example.UniversityInformationSystem.dto.response.AcademicianDto;
+import com.example.UniversityInformationSystem.dto.response.CourseDto;
+import com.example.UniversityInformationSystem.dto.response.StudentDto;
 import com.example.UniversityInformationSystem.exception.AlreadyAddedException;
 import com.example.UniversityInformationSystem.exception.LogicalMistakeException;
 import com.example.UniversityInformationSystem.exception.ModelNotFoundException;

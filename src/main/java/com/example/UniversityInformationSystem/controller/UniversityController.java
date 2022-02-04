@@ -1,9 +1,9 @@
 package com.example.UniversityInformationSystem.controller;
 
-import com.example.UniversityInformationSystem.dto.FacultyDto;
-import com.example.UniversityInformationSystem.dto.MajorDto;
-import com.example.UniversityInformationSystem.dto.StudentDto;
-import com.example.UniversityInformationSystem.dto.UniversityDto;
+import com.example.UniversityInformationSystem.dto.response.FacultyDto;
+import com.example.UniversityInformationSystem.dto.response.MajorDto;
+import com.example.UniversityInformationSystem.dto.response.StudentDto;
+import com.example.UniversityInformationSystem.dto.response.UniversityDto;
 import com.example.UniversityInformationSystem.service.UniversityService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;

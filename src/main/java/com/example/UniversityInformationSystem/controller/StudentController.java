@@ -1,7 +1,7 @@
 package com.example.UniversityInformationSystem.controller;
 
-import com.example.UniversityInformationSystem.dto.CourseDto;
-import com.example.UniversityInformationSystem.dto.StudentDto;
+import com.example.UniversityInformationSystem.dto.response.CourseDto;
+import com.example.UniversityInformationSystem.dto.response.StudentDto;
 import com.example.UniversityInformationSystem.model.CourseModel;
 import com.example.UniversityInformationSystem.service.CourseService;
 import lombok.AllArgsConstructor;

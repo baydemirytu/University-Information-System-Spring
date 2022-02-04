@@ -30,6 +30,7 @@ public class StudentModel {
     @NotEmpty
     private String surname;
 
+    private String password;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "majorId")

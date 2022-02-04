@@ -1,23 +1,17 @@
 package com.example.UniversityInformationSystem.service;
 
-import com.example.UniversityInformationSystem.dto.StudentDto;
+import com.example.UniversityInformationSystem.dto.request.StudentRegisterRequest;
+import com.example.UniversityInformationSystem.dto.response.StudentDto;
 import com.example.UniversityInformationSystem.exception.ModelNotFoundException;
 import com.example.UniversityInformationSystem.model.CourseModel;
 import com.example.UniversityInformationSystem.repository.ICourseRepository;
 import lombok.AllArgsConstructor;
 import com.example.UniversityInformationSystem.model.StudentModel;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.stereotype.Component;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.example.UniversityInformationSystem.repository.IStudentRepository;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.PostConstruct;
 import java.util.*;
 
 @Service
@@ -43,6 +37,9 @@ public class StudentService {
         studentRepository.save(studentModel);
 
     }
+
+
+
     public List<StudentDto> getAllStudents(){
         studentDtoList.clear();
 

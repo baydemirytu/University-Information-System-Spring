@@ -1,9 +1,9 @@
 package com.example.UniversityInformationSystem.service;
 
-import com.example.UniversityInformationSystem.dto.AcademicianDto;
-import com.example.UniversityInformationSystem.dto.FacultyDto;
-import com.example.UniversityInformationSystem.dto.MajorDto;
-import com.example.UniversityInformationSystem.dto.StudentDto;
+import com.example.UniversityInformationSystem.dto.response.AcademicianDto;
+import com.example.UniversityInformationSystem.dto.response.FacultyDto;
+import com.example.UniversityInformationSystem.dto.response.MajorDto;
+import com.example.UniversityInformationSystem.dto.response.StudentDto;
 import com.example.UniversityInformationSystem.exception.AlreadyAddedException;
 import com.example.UniversityInformationSystem.exception.ModelNotFoundException;
 import com.example.UniversityInformationSystem.model.FacultyModel;
@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 @Service
 @AllArgsConstructor
