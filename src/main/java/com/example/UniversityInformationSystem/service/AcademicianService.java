@@ -21,18 +21,6 @@ public class AcademicianService {
 
     private List<CourseModel> courseModelList;
 
-    @Transactional
-    public void addAcademician(AcademicianDto academicianDto) {
-
-        AcademicianModel academicianModel = new AcademicianModel();
-        academicianModel.setName(academicianDto.getName());
-        academicianModel.setSurname(academicianDto.getSurname());
-        academicianModel.setTitle(String.valueOf(academicianDto.getTitle()));
-        academicianModel.setCourseModelList(null);
-        academicianRepository.save(academicianModel);
-
-    }
-
 
     public List<AcademicianDto> getAllAcademicians() {
         academicianDtoList.clear();

@@ -26,8 +26,10 @@ public class StudentController {
 
     private List<CourseDto> courseDtoList;
 
+
     @GetMapping
     public ResponseEntity<String> merhaba(){
+
         return new ResponseEntity<>("merhaba",HttpStatus.OK);
     }
 
@@ -58,11 +60,7 @@ public class StudentController {
 
     }
 
-    @PostMapping("/add")
-    public ResponseEntity<String> addStudent(@Valid @RequestBody StudentDto studentDto){
-        studentService.addStudent(studentDto);
-        return new ResponseEntity<>(studentDto.toString(), HttpStatus.OK);
-    }
+
 
     @DeleteMapping("/delete/{studentId}")
     public ResponseEntity<String> deleteStudentById(@PathVariable Long studentId){

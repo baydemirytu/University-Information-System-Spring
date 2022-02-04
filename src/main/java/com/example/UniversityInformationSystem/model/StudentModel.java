@@ -8,6 +8,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -30,6 +31,11 @@ public class StudentModel {
     @NotEmpty
     private String surname;
 
+    @Email
+    private String email;
+
+    @NotEmpty
+    @NotNull
     private String password;
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -27,16 +27,7 @@ public class StudentService {
     private List<CourseModel> courseModelList;
 
 
-    @Transactional
-    public void addStudent (StudentDto studentDto){
-        StudentModel studentModel = new StudentModel();
-        studentModel.setName(studentDto.getName());
-        studentModel.setSurname(studentDto.getSurname());
-        studentModel.setMajorModel(null);
-        studentModel.setCourseModelList(null);
-        studentRepository.save(studentModel);
 
-    }
 
 
 

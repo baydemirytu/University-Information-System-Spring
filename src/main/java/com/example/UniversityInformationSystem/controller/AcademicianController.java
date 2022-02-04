@@ -60,13 +60,7 @@ public class AcademicianController {
     }
 
 
-    @PostMapping("/add")
-    public ResponseEntity<String> addAcademician (@RequestBody AcademicianDto academicianDto){
 
-        academicianService.addAcademician(academicianDto);
-        return new ResponseEntity<>(academicianDto.toString(),HttpStatus.OK);
-
-    }
 
     @DeleteMapping("/delete/{academicianId}")
     public ResponseEntity<String> deleteAcademicianById(@PathVariable Long academicianId){

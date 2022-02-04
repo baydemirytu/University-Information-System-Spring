@@ -3,6 +3,7 @@ package com.example.UniversityInformationSystem.model;
 import lombok.Data;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -24,11 +25,18 @@ public class AcademicianModel {
     @NotEmpty
     private String surname;
 
-    private String password;
-
     @NotNull
     @NotEmpty
     private String title;
+
+    @Email
+    private String email;
+
+    @NotNull
+    @NotEmpty
+    private String password;
+
+
 
     @OneToMany(fetch = FetchType.LAZY)
     private List<CourseModel> courseModelList;

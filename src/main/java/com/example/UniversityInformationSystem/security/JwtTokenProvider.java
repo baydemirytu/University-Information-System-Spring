@@ -1,6 +1,7 @@
 package com.example.UniversityInformationSystem.security;
 
 import io.jsonwebtoken.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
@@ -9,10 +10,11 @@ import java.util.Date;
 @Component
 public class JwtTokenProvider {
 
+    @Value("${uis-app-secret}")
+    private String APP_SECRET;
 
-    private final String APP_SECRET = "UniversityInfSystem";
-
-    private final Long EXPIRES_IN = Integer.toUnsignedLong(604800);
+    @Value("${uis-expires-in}")
+    private Long EXPIRES_IN;
 
     public String generateJwtToken(Authentication authentication){
 
