@@ -2,12 +2,11 @@ package com.example.UniversityInformationSystem.controller;
 
 import com.example.UniversityInformationSystem.dto.request.*;
 import com.example.UniversityInformationSystem.exception.ModelNotFoundException;
+import com.example.UniversityInformationSystem.model.ConfirmationTokenModel;
+import com.example.UniversityInformationSystem.model.EmailModel;
 import com.example.UniversityInformationSystem.model.roles.UserRole;
 import com.example.UniversityInformationSystem.security.JwtTokenProvider;
-import com.example.UniversityInformationSystem.service.AcademicianService;
-import com.example.UniversityInformationSystem.service.AdminService;
-import com.example.UniversityInformationSystem.service.EmailService;
-import com.example.UniversityInformationSystem.service.StudentService;
+import com.example.UniversityInformationSystem.service.*;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +34,26 @@ public class AuthController {
     private final AdminService adminService;
 
     private final EmailService emailService;
+
+    private final ConfirmationTokenService tokenService;
+
+
+    @GetMapping("/confirm")
+    @Transactional
+    public ResponseEntity<String> confirmAccount(@RequestParam(name = "token") String token){
+
+        ConfirmationTokenModel confToken = tokenService.getTokenByToken(token);
+        EmailModel emailModel = emailService.getEmailByEmail(confToken.getEmailModel().getEmail());
+        UserRole role = emailModel.getUserRole();
+        if(role==UserRole.Student){
+            studentService.enableStudent(emailModel);
+        }
+        else if (role == UserRole.Academician){
+            academicianService.enableAcademician(emailModel);
+        }
+        return new ResponseEntity<String>(emailModel.getEmail()+" is verified. You con login now!",HttpStatus.OK);
+
+    }
 
 
     @PostMapping("/login")

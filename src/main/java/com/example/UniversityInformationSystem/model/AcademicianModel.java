@@ -51,7 +51,7 @@ public class AcademicianModel implements UserDetails {
     private UserRole userRole = UserRole.Academician;
 
     private Boolean locked = false;
-    private Boolean enabled = true;
+    private Boolean enabled = false;
 
 
     @OneToMany(fetch = FetchType.LAZY)

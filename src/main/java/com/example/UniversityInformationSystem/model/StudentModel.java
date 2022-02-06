@@ -48,16 +48,14 @@ public class StudentModel implements UserDetails {
     private UserRole userRole = UserRole.Student;
 
     private Boolean locked = false;
-    private Boolean enabled = true;
+    private Boolean enabled = false;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "majorId")
-    @OnDelete(action = OnDeleteAction.CASCADE)
     private MajorModel majorModel;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "courseId")
-    @OnDelete(action = OnDeleteAction.CASCADE)
     private List<CourseModel> courseModelList;
 
     //constructor

@@ -25,14 +25,14 @@ public class UserDetailServiceImpl implements UserDetailsService {
 
 
         if(academicianService.getAcademicianByEmail(email)!=null){
-            return AcademicianModel.create(academicianService.getAcademicianByEmail(email));
+            return academicianService.getAcademicianByEmail(email);
         }
         else if(studentService.getStudentByEmail(email)!=null){
-            return StudentModel.create(studentService.getStudentByEmail(email));
+            return studentService.getStudentByEmail(email);
         }
         else if(adminService.getAdminByEmail(email)!=null){
 
-            return AdminModel.create(adminService.getAdminByEmail(email));
+            return adminService.getAdminByEmail(email);
         }
         return null;
     }

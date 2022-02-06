@@ -5,8 +5,7 @@ import com.example.UniversityInformationSystem.dto.request.AcademicianRegisterRe
 import com.example.UniversityInformationSystem.dto.response.AcademicianDto;
 import com.example.UniversityInformationSystem.exception.AlreadyAddedException;
 import com.example.UniversityInformationSystem.exception.ModelNotFoundException;
-import com.example.UniversityInformationSystem.model.AcademicianModel;
-import com.example.UniversityInformationSystem.model.CourseModel;
+import com.example.UniversityInformationSystem.model.*;
 import com.example.UniversityInformationSystem.repository.IAcademicianRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -31,6 +30,7 @@ public class AcademicianService implements UserDetailsService {
 
     private EmailService emailService;
 
+    private final ConfirmationTokenService confirmationTokenService;
 
 
     @Transactional
@@ -46,19 +46,25 @@ public class AcademicianService implements UserDetailsService {
         academicianModel.setPassword(beansConfig.passwordEncoder().encode(registerRequest.getPassword()));
         academicianModel.setMajorModel(null);
         academicianModel.setCourseModelList(null);
-        academicianRepository.save(academicianModel);
 
-        academicianModel = getAcademicianByEmail(registerRequest.getEmail());
-
-        emailService.saveEmailToRepo(academicianModel.getAcademicianId(), academicianModel.getEmail(),
-                academicianModel.getUserRole());
+        academicianModel = academicianRepository.save(academicianModel);
 
 
-        emailService.sendEmail(academicianModel.getEmail(),"Your UIS Academician Id!",
+        EmailModel emailModel = emailService.saveEmailToRepo(academicianModel);
+
+        ConfirmationTokenModel confToken = confirmationTokenService.saveConfToken(emailModel);
+
+        emailModel.setConfirmationTokenModel(confToken);
+
+        emailModel = emailService.saveEmailToRepo(emailModel);
+
+        String link = "http://localhost:8080/auth/confirm?token=" + confToken.getToken();
+
+        emailService.sendEmail(academicianModel.getEmail(),"Your UIS Activation email!",
                 "Dear Academician(" + academicianModel.getName() + " " + academicianModel.getSurname() + ")," +
-                        " Welcome to UIS!\nThis email contains your secret Id." +
-                        " You will login the system via using it. Do not share or forget it!\n" +
-                        "Your Academician id: " + academicianModel.getAcademicianId());
+                        " Welcome to UIS!\nThis email contains your email verification link." +
+                        " You will login the system via activating it. Do not share it!\n" +
+                        "Your activation link: " + link);
     }
 
 
@@ -135,6 +141,15 @@ public class AcademicianService implements UserDetailsService {
     public AcademicianModel getAcademicianByEmail(String email) {
 
         return academicianRepository.findByEmail(email);
+
+
+    }
+
+    public void enableAcademician(EmailModel emailModel) {
+
+        AcademicianModel academicianModel = getAcademicianByEmail(emailModel.getEmail());
+        academicianModel.setEnabled(true);
+        academicianRepository.save(academicianModel);
 
 
     }

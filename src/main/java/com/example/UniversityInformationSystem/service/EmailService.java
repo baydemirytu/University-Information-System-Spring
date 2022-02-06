@@ -1,6 +1,9 @@
 package com.example.UniversityInformationSystem.service;
 
+import com.example.UniversityInformationSystem.model.AcademicianModel;
+import com.example.UniversityInformationSystem.model.AdminModel;
 import com.example.UniversityInformationSystem.model.EmailModel;
+import com.example.UniversityInformationSystem.model.StudentModel;
 import com.example.UniversityInformationSystem.model.roles.UserRole;
 import com.example.UniversityInformationSystem.repository.IEmailRepository;
 import lombok.AllArgsConstructor;
@@ -33,14 +36,51 @@ public class EmailService {
     }
 
     @Transactional
-    public void saveEmailToRepo(Long id, String email, UserRole role){
+    public EmailModel saveEmailToRepo(StudentModel studentModel){
 
         EmailModel emailModel = new EmailModel();
-        emailModel.setUserId(id);
-        emailModel.setEmail(email);
-        emailModel.setUserRole(role);
-        emailRepository.save(emailModel);
+        emailModel.setUserId(studentModel.getStudentId());
+        emailModel.setEmail(studentModel.getEmail());
+        emailModel.setUserRole(studentModel.getUserRole());
+        return emailRepository.save(emailModel);
 
     }
+
+
+    @Transactional
+    public EmailModel saveEmailToRepo(AdminModel adminModel){
+
+        EmailModel emailModel = new EmailModel();
+        emailModel.setUserId(adminModel.getAdminId());
+        emailModel.setEmail(adminModel.getEmail());
+        emailModel.setUserRole(adminModel.getUserRole());
+        return emailRepository.save(emailModel);
+
+    }
+
+
+    @Transactional
+    public EmailModel saveEmailToRepo(AcademicianModel academicianModel){
+
+        EmailModel emailModel = new EmailModel();
+        emailModel.setUserId(academicianModel.getAcademicianId());
+        emailModel.setEmail(academicianModel.getEmail());
+        emailModel.setUserRole(academicianModel.getUserRole());
+        return emailRepository.save(emailModel);
+
+    }
+
+
+    @Transactional
+    public EmailModel saveEmailToRepo(EmailModel emailModel){
+
+
+        return emailRepository.save(emailModel);
+
+    }
+
+
+
+
 
 }

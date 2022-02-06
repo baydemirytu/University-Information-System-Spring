@@ -30,6 +30,7 @@ public class JwtTokenProvider {
                 .signWith(SignatureAlgorithm.HS512,APP_SECRET).compact();
 
     }
+
     public String academicianJwtToken(Authentication authentication){
 
         AcademicianModel academicianModel = (AcademicianModel) authentication.getPrincipal();

@@ -5,6 +5,7 @@ import com.example.UniversityInformationSystem.dto.request.AdminRegisterRequest;
 import com.example.UniversityInformationSystem.exception.AlreadyAddedException;
 import com.example.UniversityInformationSystem.exception.ModelNotFoundException;
 import com.example.UniversityInformationSystem.model.AdminModel;
+import com.example.UniversityInformationSystem.model.EmailModel;
 import com.example.UniversityInformationSystem.repository.IAdminRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -41,9 +42,7 @@ public class AdminService implements UserDetailsService {
 
         adminModel=getAdminByEmail(registerRequest.getEmail());
 
-        emailService.saveEmailToRepo(adminModel.getAdminId(), adminModel.getEmail(), adminModel.getUserRole());
-
-
+        EmailModel emailModel = emailService.saveEmailToRepo(adminModel);
 
         emailService.sendEmail(adminModel.getEmail(),"Your UIS Admin Id!",
                 "Dear Admin(" + adminModel.getName() + " " + adminModel.getSurname() + ")," +

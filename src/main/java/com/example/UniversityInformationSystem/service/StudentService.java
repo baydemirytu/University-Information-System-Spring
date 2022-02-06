@@ -5,7 +5,9 @@ import com.example.UniversityInformationSystem.dto.request.StudentRegisterReques
 import com.example.UniversityInformationSystem.dto.response.StudentDto;
 import com.example.UniversityInformationSystem.exception.AlreadyAddedException;
 import com.example.UniversityInformationSystem.exception.ModelNotFoundException;
+import com.example.UniversityInformationSystem.model.ConfirmationTokenModel;
 import com.example.UniversityInformationSystem.model.CourseModel;
+import com.example.UniversityInformationSystem.model.EmailModel;
 import com.example.UniversityInformationSystem.repository.ICourseRepository;
 import lombok.AllArgsConstructor;
 import com.example.UniversityInformationSystem.model.StudentModel;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Service;
 import com.example.UniversityInformationSystem.repository.IStudentRepository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -34,6 +37,7 @@ public class StudentService implements UserDetailsService{
 
     private EmailService emailService;
 
+    private final ConfirmationTokenService confirmationTokenService;
 
 
     @Transactional
@@ -48,19 +52,27 @@ public class StudentService implements UserDetailsService{
         studentModel.setPassword(beansConfig.passwordEncoder().encode(registerRequest.getPassword()));
         studentModel.setMajorModel(null);
         studentModel.setCourseModelList(null);
-        studentRepository.save(studentModel);
+
+        studentModel = studentRepository.save(studentModel);
+
+        EmailModel emailModel = emailService.saveEmailToRepo(studentModel);
 
 
-        studentModel = getStudentByEmail(registerRequest.getEmail());
-
-        emailService.saveEmailToRepo(studentModel.getStudentId(), studentModel.getEmail(), studentModel.getUserRole());
+        ConfirmationTokenModel confToken = confirmationTokenService.saveConfToken(emailModel);
 
 
-        emailService.sendEmail(studentModel.getEmail(),"Your UIS Student Id!",
+        emailModel.setConfirmationTokenModel(confToken);
+
+
+        emailModel = emailService.saveEmailToRepo(emailModel);
+
+        String link = "http://localhost:8080/auth/confirm?token=" + confToken.getToken();
+
+        emailService.sendEmail(studentModel.getEmail(),"Your UIS activating email!",
                 "Dear Student(" + studentModel.getName() + " " + studentModel.getSurname() + ")," +
-                        "Welcome to UIS!\nThis email contains your secret Id." +
-                        " You will login the system via using it. Do not share or forget it!\n" +
-                        "Your Student id: " + studentModel.getStudentId());
+                        "Welcome to UIS!\nThis email contains your email verification link." +
+                        " You will login the system via activating it. Do not share it!\n" +
+                        "Your activation link: " + link);
 
     }
 
@@ -171,5 +183,13 @@ public class StudentService implements UserDetailsService{
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         StudentModel studentModel = getStudentByEmail(email);
         return StudentModel.create(studentModel);
+    }
+
+    public void enableStudent(EmailModel emailModel) {
+
+        StudentModel studentModel = getStudentByEmail(emailModel.getEmail());
+        studentModel.setEnabled(true);
+        studentRepository.save(studentModel);
+
     }
 }
