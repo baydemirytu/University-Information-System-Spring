@@ -1,5 +1,8 @@
 package com.example.UniversityInformationSystem.security;
 
+import com.example.UniversityInformationSystem.model.AcademicianModel;
+import com.example.UniversityInformationSystem.model.AdminModel;
+import com.example.UniversityInformationSystem.model.StudentModel;
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
@@ -16,22 +19,45 @@ public class JwtTokenProvider {
     @Value("${uis-expires-in}")
     private Long EXPIRES_IN;
 
-    public String generateJwtToken(Authentication authentication){
+    public String adminJwtToken(Authentication authentication){
 
-        JwtUserDetails userDetails = (JwtUserDetails) authentication.getPrincipal();
+        AdminModel adminModel = (AdminModel) authentication.getPrincipal();
         Date expireDate = new Date(new Date().getTime()+EXPIRES_IN);
 
-        return Jwts.builder().setSubject(Long.toString(userDetails.getId()))
+        return Jwts.builder().setSubject(adminModel.getEmail())
+                .setIssuedAt(new Date())
+                .setExpiration(expireDate)
+                .signWith(SignatureAlgorithm.HS512,APP_SECRET).compact();
+
+    }
+    public String academicianJwtToken(Authentication authentication){
+
+        AcademicianModel academicianModel = (AcademicianModel) authentication.getPrincipal();
+        Date expireDate = new Date(new Date().getTime()+EXPIRES_IN);
+
+        return Jwts.builder().setSubject(academicianModel.getEmail())
                 .setIssuedAt(new Date())
                 .setExpiration(expireDate)
                 .signWith(SignatureAlgorithm.HS512,APP_SECRET).compact();
 
     }
 
-    public Long getUserIdFromJwt(String token){
+    public String studentJwtToken(Authentication authentication){
+
+        StudentModel studentModel = (StudentModel) authentication.getPrincipal();
+        Date expireDate = new Date(new Date().getTime()+EXPIRES_IN);
+
+        return Jwts.builder().setSubject(studentModel.getEmail())
+                .setIssuedAt(new Date())
+                .setExpiration(expireDate)
+                .signWith(SignatureAlgorithm.HS512,APP_SECRET).compact();
+
+    }
+
+    public String getUserEmailFromJwt(String token){
 
         Claims claims = Jwts.parser().setSigningKey(APP_SECRET).parseClaimsJws(token).getBody();
-        return Long.parseLong(claims.getSubject());
+        return claims.getSubject();
 
     }
 

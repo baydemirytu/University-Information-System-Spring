@@ -1,13 +1,17 @@
 package com.example.UniversityInformationSystem.service;
 
+import com.example.UniversityInformationSystem.config.BeansConfig;
 import com.example.UniversityInformationSystem.dto.request.StudentRegisterRequest;
 import com.example.UniversityInformationSystem.dto.response.StudentDto;
+import com.example.UniversityInformationSystem.exception.AlreadyAddedException;
 import com.example.UniversityInformationSystem.exception.ModelNotFoundException;
 import com.example.UniversityInformationSystem.model.CourseModel;
 import com.example.UniversityInformationSystem.repository.ICourseRepository;
 import lombok.AllArgsConstructor;
 import com.example.UniversityInformationSystem.model.StudentModel;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import com.example.UniversityInformationSystem.repository.IStudentRepository;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,7 +20,7 @@ import java.util.*;
 
 @Service
 @AllArgsConstructor
-public class StudentService {
+public class StudentService implements UserDetailsService{
 
     private final IStudentRepository studentRepository;
 
@@ -26,9 +30,39 @@ public class StudentService {
 
     private List<CourseModel> courseModelList;
 
+    private BeansConfig beansConfig;
+
+    private EmailService emailService;
 
 
 
+    @Transactional
+    public void registerStudent(StudentRegisterRequest registerRequest){
+        if(emailService.getEmailByEmail(registerRequest.getEmail())!=null){
+            throw new AlreadyAddedException("The email is already exists!");
+        }
+        StudentModel studentModel = new StudentModel();
+        studentModel.setName(registerRequest.getName());
+        studentModel.setSurname(registerRequest.getSurname());
+        studentModel.setEmail(registerRequest.getEmail());
+        studentModel.setPassword(beansConfig.passwordEncoder().encode(registerRequest.getPassword()));
+        studentModel.setMajorModel(null);
+        studentModel.setCourseModelList(null);
+        studentRepository.save(studentModel);
+
+
+        studentModel = getStudentByEmail(registerRequest.getEmail());
+
+        emailService.saveEmailToRepo(studentModel.getStudentId(), studentModel.getEmail(), studentModel.getUserRole());
+
+
+        emailService.sendEmail(studentModel.getEmail(),"Your UIS Student Id!",
+                "Dear Student(" + studentModel.getName() + " " + studentModel.getSurname() + ")," +
+                        "Welcome to UIS!\nThis email contains your secret Id." +
+                        " You will login the system via using it. Do not share or forget it!\n" +
+                        "Your Student id: " + studentModel.getStudentId());
+
+    }
 
 
     public List<StudentDto> getAllStudents(){
@@ -50,6 +84,23 @@ public class StudentService {
 
 
     }
+
+    public StudentModel getStudentByEmail(String email){
+
+        return studentRepository.findByEmail(email);
+
+
+    }
+
+
+    public boolean hasStudentByEmail(String email){
+
+        if(getStudentByEmail(email)==null){
+            return false;
+        }
+        return true;
+    }
+
 
     public StudentDto convertToStudentDto(StudentModel studentModel){
 
@@ -116,4 +167,9 @@ public class StudentService {
     }
 
 
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        StudentModel studentModel = getStudentByEmail(email);
+        return StudentModel.create(studentModel);
+    }
 }

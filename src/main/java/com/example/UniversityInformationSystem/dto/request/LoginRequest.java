@@ -3,8 +3,8 @@ package com.example.UniversityInformationSystem.dto.request;
 import lombok.Data;
 
 @Data
-public class StudentLoginRequest {
+public class LoginRequest {
 
-    private String id;//Student id is used as username.
+    private String email;
     private String password;
 }

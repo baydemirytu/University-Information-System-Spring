@@ -1,11 +1,17 @@
 package com.example.UniversityInformationSystem.config;
 
+import com.example.UniversityInformationSystem.exception.ModelNotFoundException;
 import com.example.UniversityInformationSystem.security.JwtAuthenticationEntryPoint;
 import com.example.UniversityInformationSystem.security.JwtAuthenticationFilter;
-import com.example.UniversityInformationSystem.service.UserDetailsServiceImpl;
+import com.example.UniversityInformationSystem.service.AcademicianService;
+import com.example.UniversityInformationSystem.service.AdminService;
+import com.example.UniversityInformationSystem.service.StudentService;
+
+import com.example.UniversityInformationSystem.service.UserDetailServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.BeanIds;
@@ -21,19 +27,18 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
+
 @Configuration
 @EnableWebSecurity
 @AllArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private UserDetailsServiceImpl userDetailsService;
 
     private JwtAuthenticationEntryPoint handler;
 
-    @Bean
-    public JwtAuthenticationFilter jwtAuthenticationFilter(){
-        return new JwtAuthenticationFilter();
-    }
+    private final UserDetailServiceImpl userDetailService;
+
+    private PasswordEncoder passwordEncoder;
 
     @Bean(BeanIds.AUTHENTICATION_MANAGER)
     @Override
@@ -42,13 +47,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+    public JwtAuthenticationFilter jwtAuthenticationFilter(){
+        return new JwtAuthenticationFilter();
     }
 
+
+
+
     @Override
-    public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
-        authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailService).passwordEncoder(passwordEncoder);
     }
 
     @Bean
@@ -81,8 +89,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers("/auth/**")
                 .permitAll()
-                .antMatchers("/auth/secret/register/admin")
-                .denyAll()
                 .antMatchers(HttpMethod.GET,"/academician/**")
                 .authenticated()
                 .antMatchers(HttpMethod.POST,"/academician/**")
@@ -135,7 +141,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .denyAll();
 
         httpSecurity.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+
     }
+
 
 
 
