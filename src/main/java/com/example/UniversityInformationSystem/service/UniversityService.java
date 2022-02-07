@@ -87,6 +87,7 @@ public class UniversityService {
 
     @Transactional
     public UniversityDto addFacultyToUniversity(Long uniId, Long facultyId) {
+
         FacultyModel facultyModel = facultyService.getFacultyById(facultyId);
 
         UniversityModel universityModel =  getUniversityById(uniId);

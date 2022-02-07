@@ -51,6 +51,9 @@ public class AuthController {
         else if (role == UserRole.Academician){
             academicianService.enableAcademician(emailModel);
         }
+        else if (role == UserRole.Admin){
+            adminService.enableAdmin(emailModel);
+        }
         return new ResponseEntity<String>(emailModel.getEmail()+" is verified. You con login now!",HttpStatus.OK);
 
     }

@@ -4,7 +4,9 @@ import com.example.UniversityInformationSystem.config.BeansConfig;
 import com.example.UniversityInformationSystem.dto.request.AdminRegisterRequest;
 import com.example.UniversityInformationSystem.exception.AlreadyAddedException;
 import com.example.UniversityInformationSystem.exception.ModelNotFoundException;
+import com.example.UniversityInformationSystem.model.AcademicianModel;
 import com.example.UniversityInformationSystem.model.AdminModel;
+import com.example.UniversityInformationSystem.model.ConfirmationTokenModel;
 import com.example.UniversityInformationSystem.model.EmailModel;
 import com.example.UniversityInformationSystem.repository.IAdminRepository;
 import lombok.AllArgsConstructor;
@@ -24,7 +26,7 @@ public class AdminService implements UserDetailsService {
 
     private EmailService emailService;
 
-
+    private final ConfirmationTokenService confirmationTokenService;
 
     @Transactional
     public void register(AdminRegisterRequest registerRequest){
@@ -38,17 +40,24 @@ public class AdminService implements UserDetailsService {
         adminModel.setSurname(registerRequest.getSurname());
         adminModel.setEmail(registerRequest.getEmail());
         adminModel.setPassword(beansConfig.passwordEncoder().encode(registerRequest.getPassword()));
-        adminRepository.save(adminModel);
+        adminModel = adminRepository.save(adminModel);
 
-        adminModel=getAdminByEmail(registerRequest.getEmail());
 
         EmailModel emailModel = emailService.saveEmailToRepo(adminModel);
 
-        emailService.sendEmail(adminModel.getEmail(),"Your UIS Admin Id!",
+        ConfirmationTokenModel confToken = confirmationTokenService.saveConfToken(emailModel);
+
+        emailModel.setConfirmationTokenModel(confToken);
+
+        emailModel = emailService.saveEmailToRepo(emailModel);
+
+        String link = "http://localhost:8080/auth/confirm?token=" + confToken.getToken();
+
+        emailService.sendEmail(adminModel.getEmail(),"Your UIS Activation email!",
                 "Dear Admin(" + adminModel.getName() + " " + adminModel.getSurname() + ")," +
-                        "Welcome to UIS!\nThis email contains your secret Id." +
-                        " You will login the system via using it. Do not share or forget it!\n" +
-                        "Your Admin id: " + adminModel.getAdminId());
+                        " Welcome to UIS!\nThis email contains your email verification link." +
+                        " You will login the system via activating it. Do not share it!\n" +
+                        "Your activation link: " + link);
     }
 
 
@@ -82,4 +91,11 @@ public class AdminService implements UserDetailsService {
     }
 
 
+    public void enableAdmin(EmailModel emailModel) {
+
+        AdminModel adminModel = getAdminByEmail(emailModel.getEmail());
+        adminModel.setEnabled(true);
+        adminRepository.save(adminModel);
+
+    }
 }

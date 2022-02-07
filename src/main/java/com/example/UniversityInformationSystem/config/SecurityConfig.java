@@ -76,6 +76,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
     }
+
+
+
     @Override
     public void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
@@ -144,7 +147,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     }
 
-
-
-
+/*
+    @Override
+    public void configure(HttpSecurity httpSecurity) throws Exception {
+        httpSecurity
+                .cors()
+                .and()
+                .csrf().disable()
+                .exceptionHandling().authenticationEntryPoint(handler).and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+                .authorizeRequests()
+                .antMatchers("/auth/**").permitAll();
+    }
+*/
 }

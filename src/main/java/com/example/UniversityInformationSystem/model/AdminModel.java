@@ -43,6 +43,9 @@ public class AdminModel implements UserDetails {
     @Enumerated(EnumType.STRING)
     private UserRole userRole = UserRole.Admin;
 
+
+    private boolean enabled = false;
+
     public AdminModel(Long adminId, String name, String surname, String email, String password, UserRole userRole) {
         this.adminId = adminId;
         this.name = name;
@@ -88,6 +91,6 @@ public class AdminModel implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return enabled;
     }
 }
