@@ -51,7 +51,7 @@ public class StudentController {
 
     }
 
-    @GetMapping("/courses/{studentId}")
+    @GetMapping("/all/courses/{studentId}")
     public ResponseEntity<List<CourseDto>> getTakenCourses(@PathVariable Long studentId){
 
         studentValidator(studentId);
@@ -104,7 +104,7 @@ public class StudentController {
     }
 
 
-    public boolean studentValidator(Long studentId){
+    private boolean studentValidator(Long studentId){
         System.out.println(jwtFilter.getUser().getUsername());
         String role = jwtFilter.getUser().getAuthorities().toString();
 

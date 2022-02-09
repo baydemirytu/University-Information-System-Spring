@@ -75,7 +75,7 @@ public class AuthController {
         String role = auth.getAuthorities().toString();
         System.out.println("AuthController"+role);
 
-        if(role.equals("[Student]")){
+        if(role.equals("["+UserRole.Student+"]")){
             return "Bearer " + jwtTokenProvider.studentJwtToken(auth);
         }
         else if(role.equals("["+UserRole.Admin+"]")){

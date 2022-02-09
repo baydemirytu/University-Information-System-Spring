@@ -2,7 +2,9 @@ package com.example.UniversityInformationSystem.controller;
 
 import com.example.UniversityInformationSystem.dto.response.AcademicianDto;
 import com.example.UniversityInformationSystem.dto.response.CourseDto;
+import com.example.UniversityInformationSystem.exception.LogicalMistakeException;
 import com.example.UniversityInformationSystem.model.CourseModel;
+import com.example.UniversityInformationSystem.security.JwtFilter;
 import com.example.UniversityInformationSystem.service.AcademicianService;
 import com.example.UniversityInformationSystem.service.CourseService;
 import lombok.AllArgsConstructor;
@@ -23,6 +25,8 @@ public class AcademicianController {
 
     private List<CourseDto> courseDtoList;
 
+    private final JwtFilter jwtFilter;
+
     @GetMapping
     public ResponseEntity<String> merhaba(){
         return new ResponseEntity<>("merhaba", HttpStatus.OK);
@@ -30,6 +34,7 @@ public class AcademicianController {
 
     @GetMapping("/{academicianId}")
     public ResponseEntity<AcademicianDto> getAcademicianById(@PathVariable Long academicianId){
+
 
         return new ResponseEntity<AcademicianDto>(academicianService.convertToAcademicianDto(
                                                     academicianService.getAcademicianById(academicianId)),
@@ -67,6 +72,21 @@ public class AcademicianController {
         academicianService.deleteAcademicianById(academicianId);
         return new ResponseEntity<String>("Academician deleted successfully!",HttpStatus.OK);
 
+    }
+
+
+    private boolean academicianValidator(Long academicianId){
+        System.out.println(jwtFilter.getUser().getUsername());
+        String role = jwtFilter.getUser().getAuthorities().toString();
+
+        if(role.equals("[Academician]")){
+            if (!academicianService.getAcademicianById(academicianId).getEmail().equals(jwtFilter.getUser().getUsername())){
+
+                throw new LogicalMistakeException("You can look/edit details only for yourself!");
+
+            }
+        }
+        return true;
     }
 
 
