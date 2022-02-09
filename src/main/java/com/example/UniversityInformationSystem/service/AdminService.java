@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @AllArgsConstructor
-public class AdminService implements UserDetailsService {
+public class AdminService{
 
     private IAdminRepository adminRepository;
 
@@ -75,20 +75,9 @@ public class AdminService implements UserDetailsService {
     }
 
 
-    public boolean hasAdminByEmail(String email){
-
-        if(getAdminByEmail(email)==null){
-            return false;
-        }
-        return true;
-    }
 
 
-    @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        AdminModel adminModel = getAdminByEmail(email);
-        return AdminModel.create(adminModel);
-    }
+
 
 
     public void enableAdmin(EmailModel emailModel) {

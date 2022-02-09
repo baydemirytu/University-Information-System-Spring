@@ -18,7 +18,7 @@ import java.util.List;
 
 @Service
 @AllArgsConstructor
-public class AcademicianService implements UserDetailsService {
+public class AcademicianService {
 
     private final IAcademicianRepository academicianRepository;
 
@@ -134,11 +134,6 @@ public class AcademicianService implements UserDetailsService {
         return courseModelList;
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        AcademicianModel academicianModel = getAcademicianByEmail(email);
-        return AcademicianModel.create(academicianModel);
-    }
 
     public AcademicianModel getAcademicianByEmail(String email) {
 

@@ -23,7 +23,7 @@ import java.util.*;
 
 @Service
 @AllArgsConstructor
-public class StudentService implements UserDetailsService{
+public class StudentService {
 
     private final IStudentRepository studentRepository;
 
@@ -105,14 +105,6 @@ public class StudentService implements UserDetailsService{
     }
 
 
-    public boolean hasStudentByEmail(String email){
-
-        if(getStudentByEmail(email)==null){
-            return false;
-        }
-        return true;
-    }
-
 
     public StudentDto convertToStudentDto(StudentModel studentModel){
 
@@ -180,11 +172,6 @@ public class StudentService implements UserDetailsService{
     }
 
 
-    @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        StudentModel studentModel = getStudentByEmail(email);
-        return StudentModel.create(studentModel);
-    }
 
     public void enableStudent(EmailModel emailModel) {
 
