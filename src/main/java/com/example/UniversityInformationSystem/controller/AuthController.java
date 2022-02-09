@@ -17,6 +17,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 
 @RestController
 @RequestMapping("/auth")
@@ -71,6 +74,16 @@ public class AuthController {
                 loginRequest.getPassword());
         Authentication auth = authenticationManager.authenticate(authToken);
         SecurityContextHolder.getContext().setAuthentication(auth);
+
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy 'at' hh:mm a");
+        LocalDateTime localDateTime = LocalDateTime.now();
+        String time = formatter.format(localDateTime);
+
+        emailService.sendEmail(auth.getName(),"Login successed!","Dear User,\n" +
+                "Your login request was successful. You attempted to login at: " + time + "\n" +
+                "If this request is not made by you, please contact administration immediately!");
+
 
         String role = auth.getAuthorities().toString();
         System.out.println("AuthController"+role);
