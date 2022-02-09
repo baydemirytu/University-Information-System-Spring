@@ -3,7 +3,11 @@ package com.example.UniversityInformationSystem.controller;
 import com.example.UniversityInformationSystem.dto.response.AcademicianDto;
 import com.example.UniversityInformationSystem.dto.response.CourseDto;
 import com.example.UniversityInformationSystem.dto.response.StudentDto;
+import com.example.UniversityInformationSystem.exception.LogicalMistakeException;
+import com.example.UniversityInformationSystem.security.JwtFilter;
+import com.example.UniversityInformationSystem.service.AcademicianService;
 import com.example.UniversityInformationSystem.service.CourseService;
+import com.example.UniversityInformationSystem.service.StudentService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +22,12 @@ public class CourseController {
 
 
     private final CourseService courseService;
+
+    private final JwtFilter jwtFilter;
+
+    private final StudentService studentService;
+
+    private final AcademicianService academicianService;
 
     @GetMapping
     public ResponseEntity<String> merhaba(){
@@ -62,12 +72,36 @@ public class CourseController {
     @PostMapping("/add/academician/{courseId}-{academicianId}")
     public ResponseEntity<CourseDto> addAcademicianToCourse(@PathVariable Long courseId, @PathVariable Long academicianId){
 
+        System.out.println(jwtFilter.getUser().getUsername());
+        String role = jwtFilter.getUser().getAuthorities().toString();
+
+        if(role.equals("[Academician]")){
+            if (!academicianService.getAcademicianById(academicianId).getEmail()
+                    .equals(jwtFilter.getUser().getUsername())){
+
+                throw new LogicalMistakeException("You can add courses only for yourself!");
+
+            }
+        }
+
         return new ResponseEntity<CourseDto>(courseService.addAcademicianToCourse(courseId,academicianId),HttpStatus.OK);
 
     }
 
     @PostMapping("/add/student/{courseId}-{studentId}")
     public ResponseEntity<CourseDto> addStudentToCourse(@PathVariable Long courseId, @PathVariable Long studentId){
+
+        System.out.println(jwtFilter.getUser().getUsername());
+        String role = jwtFilter.getUser().getAuthorities().toString();
+
+        if(role.equals("[Student]")){
+            if (!studentService.getStudentById(studentId).getEmail()
+                    .equals(jwtFilter.getUser().getUsername())){
+
+                throw new LogicalMistakeException("You can add courses only for yourself!");
+
+            }
+        }
 
         return new ResponseEntity<CourseDto>(courseService.addStudentToCourse(courseId,studentId),HttpStatus.OK);
 

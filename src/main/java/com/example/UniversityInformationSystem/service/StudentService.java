@@ -143,6 +143,7 @@ public class StudentService implements UserDetailsService{
             studentModel.setMajorModel(null);
         }
 
+        emailService.deleteEmailByEmail(studentModel.getEmail());
 
         studentRepository.deleteById(studentId);
 

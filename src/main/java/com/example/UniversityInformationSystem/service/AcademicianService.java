@@ -114,6 +114,8 @@ public class AcademicianService implements UserDetailsService {
 
         });
 
+        emailService.deleteEmailByEmail(academicianModel.getEmail());
+
         academicianRepository.deleteById(academicianId);
 
     }

@@ -1,17 +1,12 @@
 package com.example.UniversityInformationSystem.config;
 
-import com.example.UniversityInformationSystem.exception.ModelNotFoundException;
 import com.example.UniversityInformationSystem.security.JwtAuthenticationEntryPoint;
-import com.example.UniversityInformationSystem.security.JwtAuthenticationFilter;
-import com.example.UniversityInformationSystem.service.AcademicianService;
-import com.example.UniversityInformationSystem.service.AdminService;
-import com.example.UniversityInformationSystem.service.StudentService;
+import com.example.UniversityInformationSystem.security.JwtFilter;
 
 import com.example.UniversityInformationSystem.service.UserDetailServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.BeanIds;
@@ -20,7 +15,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -47,8 +41,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public JwtAuthenticationFilter jwtAuthenticationFilter(){
-        return new JwtAuthenticationFilter();
+    public JwtFilter jwtAuthenticationFilter(){
+        return new JwtFilter();
     }
 
 
@@ -127,7 +121,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST,"/student/**")
                 .hasAuthority("Admin")
                 .antMatchers(HttpMethod.DELETE,"/student/delete/**")
-                .hasAuthority("Admin")
+                .hasAnyAuthority("Admin","Student")
                 .antMatchers(HttpMethod.DELETE,"/student/delete/course/**")
                 .hasAnyAuthority("Admin","Student")
                 .antMatchers(HttpMethod.GET,"/student/all")

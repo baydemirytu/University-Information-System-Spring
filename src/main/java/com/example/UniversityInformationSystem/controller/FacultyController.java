@@ -40,7 +40,7 @@ public class FacultyController {
 
     }
 
-    @GetMapping("/majors/{facultyId}")
+    @GetMapping("/all/majors/{facultyId}")
     public ResponseEntity<List<MajorDto>>getMajors(@PathVariable Long facultyId){
 
         return new ResponseEntity<List<MajorDto>>(facultyService.getMajors(facultyId),HttpStatus.OK);

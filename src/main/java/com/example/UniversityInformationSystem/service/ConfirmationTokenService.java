@@ -42,4 +42,13 @@ public class ConfirmationTokenService {
 
     }
 
+
+    public void deleteTokenByToken(String token) {
+
+        ConfirmationTokenModel tokenModel = getTokenByToken(token);
+
+        tokenModel.setEmailModel(null);
+        tokenRepository.deleteByToken(token);
+
+    }
 }

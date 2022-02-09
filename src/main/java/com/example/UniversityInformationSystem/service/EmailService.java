@@ -20,6 +20,8 @@ public class EmailService {
 
     private final IEmailRepository emailRepository;
 
+    private final ConfirmationTokenService confirmationTokenService;
+
     public void sendEmail(String destination, String subject, String text){
 
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
@@ -80,7 +82,13 @@ public class EmailService {
     }
 
 
+    public void deleteEmailByEmail(String email) {
 
+        EmailModel emailModel = getEmailByEmail(email);
 
+        confirmationTokenService.deleteTokenByToken(emailModel.getConfirmationTokenModel().getToken());
 
+        emailRepository.deleteByEmail(emailModel.getEmail());
+
+    }
 }

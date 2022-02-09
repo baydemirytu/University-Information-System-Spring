@@ -73,7 +73,7 @@ public class AuthController {
         SecurityContextHolder.getContext().setAuthentication(auth);
 
         String role = auth.getAuthorities().toString();
-
+        System.out.println("AuthController"+role);
 
         if(role.equals("[Student]")){
             return "Bearer " + jwtTokenProvider.studentJwtToken(auth);

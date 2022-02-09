@@ -10,4 +10,5 @@ public interface IEmailRepository extends JpaRepository<EmailModel, Long> {
     EmailModel findByEmail(String email);
 
 
+    void deleteByEmail(String email);
 }

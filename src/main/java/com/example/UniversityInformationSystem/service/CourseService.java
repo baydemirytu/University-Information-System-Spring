@@ -97,11 +97,14 @@ public class CourseService {
         StudentModel studentModel = studentService.getStudentById(studentId);
         CourseModel courseModel = getCourseById(courseId);
 
-        if(studentModel.getMajorModel().getMajorId()!=courseModel.getMajorModel().getMajorId()){
+        if(studentModel.getMajorModel()!=null){
+            if(studentModel.getMajorModel().getMajorId()!=courseModel.getMajorModel().getMajorId()){
 
-            throw new LogicalMistakeException("Student must take courses that opened in their majors!");
+                throw new LogicalMistakeException("Student must take courses that opened in their majors!");
 
+            }
         }
+
 
         courseModel.getStudentModelList().forEach(item -> {
 
