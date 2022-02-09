@@ -80,8 +80,8 @@ public class AuthController {
         LocalDateTime localDateTime = LocalDateTime.now();
         String time = formatter.format(localDateTime);
 
-        emailService.sendEmail(auth.getName(),"Login successed!","Dear User,\n" +
-                "Your login request was successful. You attempted to login at: " + time + "\n" +
+        emailService.sendEmail(auth.getName(),"Login successed at UIS!","Dear User,\n" +
+                "Your login request was successful. You attempted to login at: " + time + ".\n" +
                 "If this request is not made by you, please contact administration immediately!");
 
 
