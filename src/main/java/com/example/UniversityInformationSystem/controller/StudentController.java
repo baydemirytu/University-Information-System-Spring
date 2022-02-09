@@ -12,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.example.UniversityInformationSystem.service.StudentService;
 
-import javax.validation.Valid;
+
 import java.util.List;
 
 @RestController
@@ -31,9 +31,9 @@ public class StudentController {
     private final JwtFilter jwtFilter;
 
     @GetMapping
-    public ResponseEntity<String> merhaba(){
+    public ResponseEntity<String> main(){
 
-        return new ResponseEntity<>("merhaba",HttpStatus.OK);
+            return new ResponseEntity<>("Main Student Page",HttpStatus.OK);
     }
 
     @GetMapping("/all")
@@ -47,7 +47,7 @@ public class StudentController {
 
         studentValidator(studentId);
 
-        return new ResponseEntity<StudentDto>(studentService.convertToStudentDto(studentService.getStudentById(studentId)), HttpStatus.OK);
+        return new ResponseEntity<>(studentService.convertToStudentDto(studentService.getStudentById(studentId)), HttpStatus.OK);
 
     }
 
@@ -61,11 +61,9 @@ public class StudentController {
         courseDtoList.clear();
         courseModelList = studentService.getTakenCourses(studentId);
 
-        courseModelList.forEach(courseModel -> {
-            courseDtoList.add(courseService.convertToCourseDto(courseModel));
-        });
+        courseModelList.forEach(courseModel -> courseDtoList.add(courseService.convertToCourseDto(courseModel)));
 
-        return new ResponseEntity<List<CourseDto>>(courseDtoList,HttpStatus.OK);
+        return new ResponseEntity<>(courseDtoList,HttpStatus.OK);
 
     }
 
@@ -81,7 +79,7 @@ public class StudentController {
         }
 
         studentService.deleteStudentById(studentId);
-        return new ResponseEntity<String>("Student deleted successfully!",HttpStatus.OK);
+        return new ResponseEntity<>("Student deleted successfully!",HttpStatus.OK);
 
     }
 
@@ -96,15 +94,13 @@ public class StudentController {
         courseDtoList.clear();
         courseModelList = studentService.deleteCourseFromTakens(studentId,courseId);
 
-        courseModelList.forEach(courseModel -> {
-            courseDtoList.add(courseService.convertToCourseDto(courseModel));
-        });
+        courseModelList.forEach(courseModel -> courseDtoList.add(courseService.convertToCourseDto(courseModel)));
 
-        return new ResponseEntity<List<CourseDto>>(courseDtoList,HttpStatus.OK);
+        return new ResponseEntity<>(courseDtoList,HttpStatus.OK);
     }
 
 
-    private boolean studentValidator(Long studentId){
+    private void studentValidator(Long studentId){
         System.out.println(jwtFilter.getUser().getUsername());
         String role = jwtFilter.getUser().getAuthorities().toString();
 
@@ -115,7 +111,7 @@ public class StudentController {
 
             }
         }
-        return true;
+
     }
 
 
