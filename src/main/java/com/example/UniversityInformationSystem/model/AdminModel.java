@@ -46,22 +46,6 @@ public class AdminModel implements UserDetails {
 
     private boolean enabled = false;
 
-    public AdminModel(Long adminId, String name, String surname, String email, String password, UserRole userRole) {
-        this.adminId = adminId;
-        this.name = name;
-        this.surname = surname;
-        this.email = email;
-        this.password = password;
-        this.userRole = userRole;
-    }
-
-    public static AdminModel create(AdminModel adminModel){
-
-        return new AdminModel(adminModel.getAdminId(), adminModel.getName(),
-                adminModel.getSurname(), adminModel.getEmail(), adminModel.getPassword(), UserRole.Admin);
-
-    }
-
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

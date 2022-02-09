@@ -64,29 +64,6 @@ public class AcademicianModel implements UserDetails {
 
 
 
-
-    public AcademicianModel(Long academicianId, String name, String surname, String email,
-                            String password, AcademicianRole academicianRole,
-                            UserRole userRole) {
-
-        this.academicianId = academicianId;
-        this.name = name;
-        this.surname = surname;
-        this.email = email;
-        this.password = password;
-        this.academicianRole = academicianRole;
-        this.userRole = userRole;
-    }
-
-    public static AcademicianModel create(AcademicianModel academicianModel) {
-
-        return new AcademicianModel(academicianModel.getAcademicianId(), academicianModel.getName(),
-                academicianModel.getSurname(), academicianModel.getEmail(),academicianModel.getPassword(),
-                AcademicianRole.Assistant, UserRole.Academician);
-
-    }
-
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         SimpleGrantedAuthority authority =

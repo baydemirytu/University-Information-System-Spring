@@ -58,23 +58,6 @@ public class StudentModel implements UserDetails {
     @JoinColumn(name = "courseId")
     private List<CourseModel> courseModelList;
 
-    //constructor
-    private StudentModel(Long studentId, String name, String surname, String email, String password, UserRole userRole) {
-        this.studentId = studentId;
-        this.name = name;
-        this.surname = surname;
-        this.email = email;
-        this.password = password;
-        this.userRole = userRole;
-    }
-
-    //Static method for construction
-    public static StudentModel create(StudentModel studentModel){
-
-        return new StudentModel(studentModel.getStudentId(), studentModel.getName(),
-                studentModel.getSurname(),studentModel.getEmail(), studentModel.getPassword(), UserRole.Student);
-    }
-
 
 
     @Override
