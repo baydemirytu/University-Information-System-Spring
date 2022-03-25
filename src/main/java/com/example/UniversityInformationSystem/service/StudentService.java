@@ -66,7 +66,7 @@ public class StudentService {
 
         emailModel = emailService.saveEmailToRepo(emailModel);
 
-        String link = "https://university-information-system.herokuapp.com/auth/confirm?token=" + confToken.getToken();
+        String link = "http://localhost:8080/auth/confirm?token=" + confToken.getToken();
 
         emailService.sendEmail(studentModel.getEmail(),"Your UIS activating email!",
                 "Dear Student(" + studentModel.getName() + " " + studentModel.getSurname() + ")," +
